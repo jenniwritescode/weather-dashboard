@@ -27,19 +27,35 @@
 
     <!--main content-->
     <main>
-      <div class="container">
+      <div class="container-fluid">
         <div class="row row-cols-2">
-          <div class="col-4">
+          <div class="col-md-4">
             <form>
               <div class="form-group">
                 <h4>Enter City Name to Search</h4>
-                <input type="search" class="form-control" id="cityName" aria-describedby="search box"><button type="submit" class="btn btn-secondary" id="searchBtn">Submit</button>
+                <input type="search" class="form-control" id="cityName" aria-describedby="search box"><button type="submit" class="btn btn-secondary" id="submitBtn">Submit</button>
               </div>
             </form>
           </div>
-          <div class="col-8"><h4>Current Weather</h4></div>
-          <div class="col-4"><h4>Past Searches</h4></div>
-          <div class="col-8"><h4>Weather Forecast</h4></div>
+          <div class="row no-gutters">
+            <div class="col-md-4">
+            </div>
+            <div id="current" class="col-md-8">
+              <!-- Card prototype -->
+                    <!-- <div class="weather card">
+                        <div class="card-image">
+                            <img src="assets/links/drinks.jpg">
+                        <div class="card-content">
+                            <span class="card-title">Card Title</span>
+                            <p>date</p>
+                            <p>weather icon</p>
+                            <p>temperature</p>
+                        </div>
+                    </div> -->
+          <div class="col-md-4"><h4>Past Searches</h4></div>
+          <div class="col-md-8" id="forecast">
+            <h4>Weather Forecast</h4>
+          </div>
         </div>
       </div>
 
@@ -48,11 +64,6 @@
 
     <!--Scripts Go Here-->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
