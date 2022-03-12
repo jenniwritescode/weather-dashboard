@@ -1,24 +1,28 @@
-//openweather api
+//current day using moment.js
+//const today = moment().format('dddd, MMMM Do');
+   // $('.todayDate').prepend(today);
 
-function getWeather(city) {
-    event.preventDefault();
+//openweather api
+async function getWeather(city) {
     let apiKey = "52b32e918d6b69c2aa0ccaa39544d317";
-    fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=imperial", {
-        "method": "GET"})
-        .then(response => {
-            const currWeather = localStorage.setItem(city, JSON.stringify(response));
-            console.log(currWeather);
-        })
-        .catch(err => {
-            alert("Weather not found.");
-            console.error(err);
-        });
-    }
+    const response = await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=imperial");
+    const weatherObj = await response.json();
+    localStorage.setItem(city, JSON.stringify(weatherObj));
+    displayWeather(weatherObj);
+}
+
+function displayWeather(weatherObj) {
+    
+}
 
 document.getElementById("searchBtn").addEventListener("click", function (event) {
+    event.preventDefault();
     let input = document.getElementById("cityName");
+    if (cityName === '') {
+        alert("Please enter a city name. Click OK to try again.");
+        return;
+    }
     localStorage.setItem("City Name", input.value);
     var city = input.value;
-    console.log(city);
     getWeather(city);
 })
