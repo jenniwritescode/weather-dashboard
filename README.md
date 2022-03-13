@@ -15,4 +15,4 @@ Styling still needs work to make forecast cards to line up horizontally instead 
 ---
 # screenshot
 
-![screenshot of app](./Assets/img/screenshot.png)
+![screenshot of app](./assets/img/screenshot.png)
