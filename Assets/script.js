@@ -31,7 +31,7 @@ async function getWeather(city) {
     return;
   }
   const weatherObj = await weather.json();
-
+  console.log("search done");
   //store weather information in local storage and parse out the data we want to use
   let current = weatherObj.current;
   console.log(current);
@@ -245,6 +245,7 @@ function getInput(event) {
   } else {
     localStorage.setItem("City Name", input.value);
     var city = input.value;
+    console.log("ready to search");
     getWeather(city);
   }
 }
@@ -253,6 +254,7 @@ function getInput(event) {
 document.getElementById("history").addEventListener("click", function (event) {
   let target = event.target;
   if (target.className.includes("searchbtn")) {
+    console.log("function: searchAgain");
     searchAgain(event);
   } else {
     getInput(event);
