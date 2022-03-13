@@ -1,7 +1,3 @@
-//current day using moment.js
-//const today = moment().format('dddd, MMMM Do');
-// $('.todayDate').prepend(today);
-
 //openweather api
 async function getWeather(city) {
   let apiKey = "52b32e918d6b69c2aa0ccaa39544d317";
@@ -36,54 +32,151 @@ async function getWeather(city) {
   }
   const weatherObj = await weather.json();
 
-  //store current weather information in local storage
-  localStorage.setItem(city, JSON.stringify(weatherObj));
-  displayWeather(weatherObj);
+  //store weather information in local storage and parse out the data we want to use
+  let current = weatherObj.current;
+  var currentObj = _.pick(
+    current,
+    "dt",
+    "humidity",
+    "temp",
+    "weather",
+    "wind_speed"
+  );
+
+  // reduce forecast to just 5 days
+  let forecast = weatherObj.daily;
+  var forecastObj = new Array();
+  for (i = 0; i < 5; i++) {
+    forecastObj[i] = _.values(forecast);
+  }
+  console.log(forecastObj);
+
+  localStorage.setItem(city, JSON.stringify(weatherObj.current));
+  localStorage.setItem("forecast", JSON.stringify(weatherObj.daily));
+  currentWeather(city, currentObj);
+  forecastWeather(forecastObj);
+  searchHistory(city);
 }
 
-function displayWeather(weatherObj) {
-  let currWeather = weatherObj.current;
-  let forecastWeather = weatherObj.daily;
-  //console.log("Current Temp: " + currWeather.temp);
-  //console.log("The temp tomorrow will be: " + forecastWeather[1].temp.day);
-  forecastDisplay(forecastWeather);
+function searchHistory(city) {
+  let displayEl = document.getElementById("history");
+  let cityButton = document.createElement("button");
+  displayEl.appendChild(cityButton);
+  cityButton.className = "btn btn-light btn-block";
+  cityButton.textContent = city;
 }
 
-function forecastDisplay (forecastWeather) {
-    let displayEl = document.getElementById("forecast");
-    let index = 0;
-    let cardEl='';
-    forecastWeather.forEach((daily) => {
-      // create card
-      console.log("creating cards");
-      cardEl = document.createElement("div");
-      cardEl.className = "forecast-card";
-      cardEl.id = `card-${index}`;
-      displayEl.appendChild(cardEl);
-      index++;
-    });
+function currentWeather(city, data) {
+  //create card
+  let displayEl = document.getElementById("current");
+  let cardEl = document.createElement("div");
+  let count = 0;
+  cardEl.className = "card bg-light mb-3";
+  displayEl.appendChild(cardEl);
 
-    let divEl = document.createElement("div");
+  //create title div
+  let cardTitleEl = document.createElement("div");
+  cardTitleEl.className = "card-header";
+  cardEl.appendChild(cardTitleEl);
+  const today = new Date(data.dt * 1000);
+  cardTitleEl.textContent = city + " on " + today.toLocaleDateString("en-US") + " at " + today.toLocaleTimeString("en-us");
+
+  //create img div
+  divEl = document.createElement("div");
+  divEl.className = "card-image";
+  cardEl.appendChild(divEl);
+
+  // image/icon
+  var iconcode = data.weather[count].icon;
+  var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+  let imgEl = document.createElement("img");
+  imgEl.setAttribute("src", iconurl);
+  divEl.appendChild(imgEl);
+
+  //create content div
+  divEl = document.createElement("div");
+  cardEl.appendChild(divEl);
+  divEl.className = "card-text";
+
+  //temperature
+  let pEl = document.createElement("p");
+  cardEl.appendChild(pEl);
+  pEl.className = "card-text";
+  pEl.textContent = "Temp: " + data.temp + "°F";
+
+  //humidity
+  pEl = document.createElement("p");
+  cardEl.appendChild(pEl);
+  pEl.className = "card-text";
+  pEl.textContent = "Humidity: " + data.humidity + "%";
+
+  //wind speed
+  pEl = document.createElement("p");
+  cardEl.appendChild(pEl);
+  pEl.className = "card-text";
+  pEl.textContent = "Wind: " + data.wind_speed + " mph";
+}
+
+function forecastWeather(data) {
+  console.log("displaying forecasted weather");
+  let count = 0;
+  let displayEl = document.getElementById("forecast");
+
+  //create row for cards
+  // let rowEl = document.createElement("div");
+  // displayEl.appendChild(rowEl);
+  // rowEl.className = "row";
+
+  for (i = 0; i < 5; i++) {
+    //create daily forecast card
+    let cardEl = document.createElement("div");
+    cardEl.className = "card bg-light mb-3";
+    cardEl.id = `card-${i}`;
+    displayEl.appendChild(cardEl);
+
+    //create title div
+    let cardTitleEl = document.createElement("h5");
+    cardTitleEl.className = "card-header";
+    cardEl.appendChild(cardTitleEl);
+    const date = new Date(data[count][i].dt * 1000);
+    cardTitleEl.textContent = date.toLocaleDateString("en-US");
+
+    //create img div
+    divEl = document.createElement("div");
     divEl.className = "card-image";
     cardEl.appendChild(divEl);
 
-    //let imgEl = document.createElement("img");
-    //imgEl.setAttribute("");
-    //divEl.appendChild(imgEl);
+    // image/icon
+    var iconcode = data[count][i].weather[count].icon;
+    var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+    let imgEl = document.createElement("img");
+    imgEl.setAttribute("src", iconurl);
+    divEl.appendChild(imgEl);
 
-    // create div for content
+    //create content div
     divEl = document.createElement("div");
     cardEl.appendChild(divEl);
-    divEl.className = "card-content";
+    divEl.className = "card-text";
 
-    // event name
-    let spanEl = document.createElement("span");
-    spanEl.className = "card-title";
-    const unixTime = forecastWeather.current.dt;
-    const cardDate =  new Date(unixTime*1000);
-    spanEl.textContent = cardDate.toLocaleDateString("en-US");
-    divEl.appendChild(spanEl);
+    //temperature
+    let pEl = document.createElement("p");
+    cardEl.appendChild(pEl);
+    pEl.className = "card-text";
+    pEl.textContent = "Temp: " + data[count][i].temp.day + "°F";
+
+    //humidity
+    pEl = document.createElement("p");
+    cardEl.appendChild(pEl);
+    pEl.className = "card-text";
+    pEl.textContent = "Humidity: " + data[count][i].humidity + "%";
+
+    //wind speed
+    pEl = document.createElement("p");
+    cardEl.appendChild(pEl);
+    pEl.className = "card-text";
+    pEl.textContent = "Wind: " + data[count][i].wind_speed + " mph";
   }
+}
 
 document
   .getElementById("submitBtn")
