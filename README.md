@@ -1,4 +1,4 @@
-### weather-dashboard
+# weather-dashboard
 
 An app that uses the OpenWeatherMap API to search for a city and return current weather information and a 5-day forecast. Previously searched cities are added to "History" and can be clicked to search again.
 

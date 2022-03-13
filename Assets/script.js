@@ -74,9 +74,9 @@ function currentWeather(city, data) {
   let title = document.getElementById("currTitle");
   if (title != null) {
     console.log(title);
-    title.innerHTML="";
+    title.innerHTML = "";
   }
-  displayEl.innerHTML="";
+  displayEl.innerHTML = "";
   let cardEl = document.createElement("div");
   let count = 0;
   cardEl.className = "card bg-light mb-3";
@@ -87,7 +87,13 @@ function currentWeather(city, data) {
   cardTitleEl.className = "card-header";
   cardEl.appendChild(cardTitleEl);
   const today = new Date(data.dt * 1000);
-  cardTitleEl.textContent = "Current weather in " + city + " on " + today.toLocaleDateString("en-US") + " at " + today.toLocaleTimeString("en-us");
+  cardTitleEl.textContent =
+    "Current weather in " +
+    city +
+    " on " +
+    today.toLocaleDateString("en-US") +
+    " at " +
+    today.toLocaleTimeString("en-us");
 
   //create img div
   divEl = document.createElement("div");
@@ -131,12 +137,10 @@ function currentWeather(city, data) {
   if (data.uvi < 3) {
     pEl.setAttribute("style", "background-color:#228B22", "text-color:#ffffff");
     pEl.textContent = "UV Index: " + data.uvi;
-  }
-  else if (data.uvi < 6 && data.uvi > 2) {
+  } else if (data.uvi < 6 && data.uvi > 2) {
     pEl.setAttribute("style", "background-color:#FFA500", "text-color:#ffffff");
     pEl.textContent = "UV Index: " + data.uvi;
-  }
-  else {
+  } else {
     pEl.setAttribute("style", "background-color:#FF0000", "text-color:#ffffff");
     pEl.textContent = "UV Index: " + data.uvi;
   }
@@ -149,14 +153,14 @@ function forecastWeather(data) {
   let title = document.getElementById("foreTitle");
   if (title != null) {
     console.log(title);
-    title.innerHTML="";
+    title.innerHTML = "";
   }
-  displayEl.innerHTML="";
+  displayEl.innerHTML = "";
 
-  //create row for cards
-  // let rowEl = document.createElement("div");
-  // displayEl.appendChild(rowEl);
-  // rowEl.className = "row";
+  //create title
+  let titleEl = document.createElement("h4");
+  displayEl.appendChild(titleEl);
+  titleEl.textContent = "5-Day Weather Forecast";
 
   for (i = 0; i < 5; i++) {
     //create daily forecast card
@@ -219,9 +223,8 @@ function searchAgain(event) {
 
 // clear innerHTML of current and forecast divs
 // function clearWeather() {
-  
-//     }
 
+//     }
 
 // submit button event listener
 document
@@ -230,29 +233,28 @@ document
     event.preventDefault();
     getInput(event);
   });
-    
+
 // get input from the user to search
 function getInput(event) {
+  event.preventDefault();
   const input = document.getElementById("cityName");
-    if (input.value === "") {
-      console.log("no data");
-      alert("Please enter a city name. Click OK to try again.");
-      return false;
-    } 
-    else {
-      localStorage.setItem("City Name", input.value);
-      var city = input.value;
-      getWeather(city);
-    }
+  if (input.value === "") {
+    console.log("no data");
+    alert("Please enter a city name. Click OK to try again.");
+    return false;
+  } else {
+    localStorage.setItem("City Name", input.value);
+    var city = input.value;
+    getWeather(city);
+  }
 }
 
-  // search history button event listener
-document.getElementById("history").addEventListener("click", function(event) {
+// search history button event listener
+document.getElementById("history").addEventListener("click", function (event) {
   let target = event.target;
   if (target.className.includes("searchbtn")) {
     searchAgain(event);
-  }
-  else {
+  } else {
     getInput(event);
   }
 });
