@@ -34,10 +34,12 @@ async function getWeather(city) {
 
   //store weather information in local storage and parse out the data we want to use
   let current = weatherObj.current;
+  console.log(current);
   var currentObj = _.pick(
     current,
     "dt",
     "humidity",
+    "uvi",
     "temp",
     "weather",
     "wind_speed"
@@ -49,10 +51,6 @@ async function getWeather(city) {
   for (i = 0; i < 5; i++) {
     forecastObj[i] = _.values(forecast);
   }
-  console.log(forecastObj);
-
-  localStorage.setItem(city, JSON.stringify(weatherObj.current));
-  localStorage.setItem("forecast", JSON.stringify(weatherObj.daily));
   currentWeather(city, currentObj);
   forecastWeather(forecastObj);
   searchHistory(city);
@@ -62,8 +60,10 @@ function searchHistory(city) {
   let displayEl = document.getElementById("history");
   let cityButton = document.createElement("button");
   displayEl.appendChild(cityButton);
-  cityButton.className = "btn btn-light btn-block";
+  cityButton.className = "searchbtn btn btn-light btn-block";
+  cityButton.id = "historySearch";
   cityButton.textContent = city;
+  localStorage.setItem("searchHistory", city);
 }
 
 function currentWeather(city, data) {
@@ -115,6 +115,23 @@ function currentWeather(city, data) {
   cardEl.appendChild(pEl);
   pEl.className = "card-text";
   pEl.textContent = "Wind: " + data.wind_speed + " mph";
+
+  //uv index
+  pEl = document.createElement("p");
+  cardEl.appendChild(pEl);
+  pEl.className = "card-text";
+  if (data.uvi < 3) {
+    pEl.setAttribute("style", "background-color:#228B22", "text-color:#ffffff");
+    pEl.textContent = "UV Index: " + data.uvi;
+  }
+  else if (data.uvi < 6 && data.uvi > 2) {
+    pEl.setAttribute("style", "background-color:#FFA500", "text-color:#ffffff");
+    pEl.textContent = "UV Index: " + data.uvi;
+  }
+  else {
+    pEl.setAttribute("style", "background-color:#FF0000", "text-color:#ffffff");
+    pEl.textContent = "UV Index: " + data.uvi;
+  }
 }
 
 function forecastWeather(data) {
@@ -178,19 +195,50 @@ function forecastWeather(data) {
   }
 }
 
+function searchAgain(event) {
+  event.stopPropogation();
+  clearWeather();
+  let current = event.target;
+  let cityClick = current.closest(".event");
+  console.log(cityClick);
+}
+
+function clearWeather() {
+  let container = document.getElementsByClassName("card");
+  console.log(container);
+  container.innerHTML = "";
+}
+
+
+// submit button event listener
 document
   .getElementById("submitBtn")
   .addEventListener("click", function (event) {
     event.preventDefault();
-    const input = document.getElementById("cityName");
-    console.log(input.value);
+    getInput(event);
+  });
+    
+// get input from the user to search
+function getInput(event) {
+  const input = document.getElementById("cityName");
     if (input.value === "") {
       console.log("no data");
       alert("Please enter a city name. Click OK to try again.");
       return false;
-    } else {
+    } 
+    else {
       localStorage.setItem("City Name", input.value);
       var city = input.value;
       getWeather(city);
     }
-  });
+}
+
+  // city button event listener
+document.getElementById("history").addEventListener("click", function(event) {
+  let target = event.target;
+  if (target.id == "historySearch"){
+    getInput(event);
+  } else if (target.className.includes("searchBtn")) {
+    searchAgain(event);
+  }
+});
