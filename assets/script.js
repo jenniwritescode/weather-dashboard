@@ -4,7 +4,7 @@ async function getWeather(city) {
 
   //get coordinates for city
   const coords = await fetch(
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    "https://api.openweathermap.org/geo/1.0/direct?q=" +
       city +
       "&limit=1&appid=" +
       apiKey
