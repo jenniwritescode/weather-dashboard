@@ -56,6 +56,7 @@ async function getWeather(city) {
   searchHistory(city);
 }
 
+// create a button for each city searched
 function searchHistory(city) {
   let displayEl = document.getElementById("history");
   let cityButton = document.createElement("button");
@@ -69,6 +70,13 @@ function searchHistory(city) {
 function currentWeather(city, data) {
   //create card
   let displayEl = document.getElementById("current");
+  //clear existing html
+  let title = document.getElementById("currTitle");
+  if (title != null) {
+    console.log(title);
+    title.innerHTML="";
+  }
+  displayEl.innerHTML="";
   let cardEl = document.createElement("div");
   let count = 0;
   cardEl.className = "card bg-light mb-3";
@@ -79,7 +87,7 @@ function currentWeather(city, data) {
   cardTitleEl.className = "card-header";
   cardEl.appendChild(cardTitleEl);
   const today = new Date(data.dt * 1000);
-  cardTitleEl.textContent = city + " on " + today.toLocaleDateString("en-US") + " at " + today.toLocaleTimeString("en-us");
+  cardTitleEl.textContent = "Current weather in " + city + " on " + today.toLocaleDateString("en-US") + " at " + today.toLocaleTimeString("en-us");
 
   //create img div
   divEl = document.createElement("div");
@@ -135,9 +143,15 @@ function currentWeather(city, data) {
 }
 
 function forecastWeather(data) {
-  console.log("displaying forecasted weather");
   let count = 0;
   let displayEl = document.getElementById("forecast");
+  //clear existing html
+  let title = document.getElementById("foreTitle");
+  if (title != null) {
+    console.log(title);
+    title.innerHTML="";
+  }
+  displayEl.innerHTML="";
 
   //create row for cards
   // let rowEl = document.createElement("div");
@@ -196,18 +210,17 @@ function forecastWeather(data) {
 }
 
 function searchAgain(event) {
-  event.stopPropogation();
-  clearWeather();
-  let current = event.target;
-  let cityClick = current.closest(".event");
-  console.log(cityClick);
+  event.preventDefault();
+  //console.log("clearing html");
+  //clearWeather();
+  let current = $(event.target).text();
+  getWeather(current);
 }
 
-function clearWeather() {
-  let container = document.getElementsByClassName("card");
-  console.log(container);
-  container.innerHTML = "";
-}
+// clear innerHTML of current and forecast divs
+// function clearWeather() {
+  
+//     }
 
 
 // submit button event listener
@@ -233,12 +246,13 @@ function getInput(event) {
     }
 }
 
-  // city button event listener
+  // search history button event listener
 document.getElementById("history").addEventListener("click", function(event) {
   let target = event.target;
-  if (target.id == "historySearch"){
-    getInput(event);
-  } else if (target.className.includes("searchBtn")) {
+  if (target.className.includes("searchbtn")) {
     searchAgain(event);
+  }
+  else {
+    getInput(event);
   }
 });
