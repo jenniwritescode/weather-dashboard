@@ -15,4 +15,4 @@ Technologies:
 ---
 # screenshot
 
-![screenshot of app](./assets/img/screenshot.png)
+![screenshot of app](./assets/img/screenshot1.png)
