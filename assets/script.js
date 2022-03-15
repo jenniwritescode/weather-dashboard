@@ -43,7 +43,6 @@ async function getWeather(city) {
     return;
   }
   const weatherObj = await weather.json();
-  console.log("search done");
 
   // separate results into current and forecast weather
   let current = weatherObj.current;
@@ -63,7 +62,6 @@ async function getWeather(city) {
   for (i = 0; i < 5; i++) {
     forecastObj[i] = _.values(forecast);
   }
-  console.log(forecastObj);
   showCurrentWeather(currentObj, city);
   showForecastWeather(forecastObj, city);
   saveSearch();
@@ -185,7 +183,6 @@ function searchHistory(city) {
 
 function runPastSearch(event) {
   var city = event.target.innerText;
-  console.log(city);
   getWeather(city);
 }
 
@@ -195,7 +192,6 @@ function getInput(event) {
   let city = cityInputEl.value.trim();
   // check for valid input
   if (city === "") {
-    console.log("no data");
     alert("Please enter a city name. Click OK to try again.");
     return false;
   } else {
