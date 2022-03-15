@@ -1,5 +1,5 @@
 // container to store search history
-var searchHistory = [];
+var cityHistoryList = [];
 
 // variables for html elements
 var cityFormEl = document.querySelector("#city-search-form");
@@ -10,31 +10,6 @@ var forecastTitle = document.querySelector("#forecast");
 var forecastContainerEl = document.querySelector("#forecast-container");
 var pastSearchButtonEl = document.querySelector("#past-search-buttons");
 
-// get input from the user to search
-function getInput(event) {
-  event.preventDefault();
-  let city = cityInputEl.value.trim();
-  // check for valid input
-  if (city === "") {
-    console.log("no data");
-    alert("Please enter a city name. Click OK to try again.");
-    return false;
-  } else {
-    getWeather(city);
-    // add city to search history array and make it the most recent entry
-    searchHistory.unshift(city);
-    cityInputEl.value = "";
-  }
-  saveSearch();
-  // pastSearch(city);
-}
-
-// function to save search history
-function saveSearch() {
-  localStorage.setItem("cities", JSON.stringify(searchHistory));
-}
-
-//openweather api function
 //openweather api function
 async function getWeather(city) {
   let apiKey = "52b32e918d6b69c2aa0ccaa39544d317";
@@ -91,20 +66,11 @@ async function getWeather(city) {
   console.log(forecastObj);
   showCurrentWeather(currentObj, city);
   showForecastWeather(forecastObj, city);
-   // searchHistory(city);
+  saveSearch();
+  searchHistory(city);
 }
 
-// create a button for each city searched
-// function searchHistory(city) {
-//   let displayEl = document.getElementById("history");
-//   let cityButton = document.createElement("button");
-//   displayEl.appendChild(cityButton);
-//   cityButton.className = "searchbtn btn btn-light btn-block";
-//   cityButton.id = "historySearch";
-//   cityButton.textContent = city;
-//   localStorage.setItem("searchHistory", city);
-// }
-
+// display current weather
 function showCurrentWeather(currentObj, searchCity) {
   //clear existing html
   weatherContainerEl.textContent = "";
@@ -161,7 +127,8 @@ function showCurrentWeather(currentObj, searchCity) {
   weatherContainerEl.appendChild(uvIndexEl);
 }
 
-function showForecastWeather(forecastObj, searchCity) {
+// display 5-day forecast
+function showForecastWeather(forecastObj) {
   //clear existing html
   forecastContainerEl.textContent = "";
   let objCount = 0;
@@ -201,24 +168,43 @@ function showForecastWeather(forecastObj, searchCity) {
   }
 }
 
+// save search history
+function saveSearch() {
+  localStorage.setItem("cities", JSON.stringify(searchHistory));
+}
+
+// create a button for each city searched
+function searchHistory(city) {
+  pastSearchEl = document.createElement("button");
+  pastSearchEl.textContent = city;
+  pastSearchEl.classList = "d-flex w-100 btn-light border p-2";
+  pastSearchEl.setAttribute("data-city",city)
+  pastSearchEl.setAttribute("type", "submit");
+  pastSearchButtonEl.prepend(pastSearchEl);
+}
+
+function runPastSearch(event) {
+  var city = event.target.getAttributes("data-city");
+  getWeather(city);
+}
+
+// get input from the user to search
+function getInput(event) {
+  event.preventDefault();
+  let city = cityInputEl.value.trim();
+  // check for valid input
+  if (city === "") {
+    console.log("no data");
+    alert("Please enter a city name. Click OK to try again.");
+    return false;
+  } else {
+    getWeather(city);
+    // add city to search history array and make it the most recent entry
+    cityHistoryList.unshift(city);
+    cityInputEl.value = "";
+  }
+}
+
 // event handler
 cityFormEl.addEventListener("submit", getInput);
-
-// function searchAgain(event) {
-//   event.preventDefault();
-//   //console.log("clearing html");
-//   //clearWeather();
-//   let current = $(event.target).text();
-//   getWeather(current);
-// }
-
-// search history button event listener
-// document.getElementById("history").addEventListener("click", function (event) {
-//   let target = event.target;
-//   if (target.className.includes("searchbtn")) {
-//     console.log("function: searchAgain");
-//     searchAgain(event);
-//   } else {
-//     getInput(event);
-//   }
-// });
+pastSearchButtonEl.addEventListener("click", runPastSearch);
