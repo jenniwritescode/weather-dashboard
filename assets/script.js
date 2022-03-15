@@ -184,7 +184,8 @@ function searchHistory(city) {
 }
 
 function runPastSearch(event) {
-  var city = event.target.getAttributes("data-city");
+  var city = event.target.innerText;
+  console.log(city);
   getWeather(city);
 }
 
